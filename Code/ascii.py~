@@ -1,40 +1,41 @@
-from PIL import Image
-import argparse
+from PIL import Image     #调用PIL图像处理库
+import argparse         
 
 parser = argparse.ArgumentParser()
 
 
-parser.add_argument('file')
-parser.add_argument('-o', '--output') 
+parser.add_argument('file')                                 #处理文件
+parser.add_argument('-o', '--output')                         
 parser.add_argument('--width', type = int, default = 80)
 parser.add_argument('--height', type = int, default = 80)
 
 args = parser.parse_args()
 
-IMG = args.file
+IMG = args.file               #获取参数，
 WIDTH = args.width
 HEIGHT = args.height
 OUTPUT = args.output
 
-ascii_char = list("$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^`'. ")
+ascii_char = list("$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^`'. ")    #使用ASCII中的70个字符
 
-def get_char(r,g,b,alpha = 256):
-    if alpha == 0:
+def get_char(r,g,b,alpha = 256):    #定义get_char函数
+    if alpha == 0:        #如果alpha为0，则输出空格
         return ' '
-    length = len(ascii_char)
-    gray = int(0.2126 * r + 0.7152 * g + 0.0722 * b)
+    length = len(ascii_char)     #将70个字符的长度，赋值给length
+    gray = int(0.2126 * r + 0.7152 * g + 0.0722 * b)      #定义灰度值
 
-    unit = (256.0 + 1)/length
-    return ascii_char[int(gray/unit)]
+    unit = (256.0 + 1)/length           #数学等式应该是：unit/length ==gray/(256+1.0),这里分成了两步写
+    return ascii_char[int(gray/unit)]    #将得到的数字取整，并赋值给ascii_char
+    
 
 if __name__ == '__main__':
 
-    im = Image.open(IMG)
+    im = Image.open(IMG)         #打开图片
     im = im.resize((WIDTH,HEIGHT), Image.NEAREST)
 
     txt = ""
 
-    for i in range(HEIGHT):
+    for i in range(HEIGHT):        #填充像素
         for j in range(WIDTH):
             txt += get_char(*im.getpixel((j,i)))
         txt += '\n'
